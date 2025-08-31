@@ -1,4 +1,4 @@
-# dok-ts2gd — TypeScript types for Godot
+# godot-typed-api — TypeScript types for Godot
 
 Strictly modular TypeScript types for the Godot API, with no ambient globals. The package normalizes API names to camelCase, carries over JSDoc from the official docs, preserves branded numeric types `int` and `float`, and ships a stable API map artifact for tools. The active version is exposed via `gen/current/` and a single entry point `index.d.ts`.
 
@@ -15,13 +15,13 @@ Strictly modular TypeScript types for the Godot API, with no ambient globals. Th
 ## Install
 
 ```bash
-npm install dok-ts2gd
+npm install godot-typed-api
 ```
 
 ## Quick Start
 
 ```ts
-import type { Node, Vector3, int, float, Signal } from "dok-ts2gd";
+import type { Node, Vector3, int, float, Signal } from "godot-typed-api";
 
 declare const node: Node;
 declare const onPressed: Signal<[]>;
@@ -125,7 +125,7 @@ Pipeline overview:
 - Consumer import:
 
   ```ts
-  import type { Node, Vector3, int, float, Signal } from "dok-ts2gd";
+  import type { Node, Vector3, int, float, Signal } from "godot-typed-api";
   ```
 
 ## Contributing

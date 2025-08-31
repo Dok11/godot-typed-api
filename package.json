@@ -1,6 +1,6 @@
 {
-  "name": "dok-ts2gd",
-  "version": "1.0.0",
+  "name": "godot-typed-api",
+  "version": "1.0.1",
   "type": "module",
   "exports": { ".": { "types": "./index.d.ts" } },
   "types": "./index.d.ts",
@@ -18,12 +18,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Dok11/dok-ts2gd.git"
+    "url": "git+https://github.com/Dok11/godot-typed-api.git"
   },
   "bugs": {
-    "url": "https://github.com/Dok11/dok-ts2gd/issues"
+    "url": "https://github.com/Dok11/godot-typed-api/issues"
   },
-  "homepage": "https://github.com/Dok11/dok-ts2gd#readme",
+  "homepage": "https://github.com/Dok11/godot-typed-api#readme",
   "description": "",
   "devDependencies": {
     "@types/node": "^24.3.0",

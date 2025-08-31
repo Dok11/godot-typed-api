@@ -1,4 +1,4 @@
-# AGENTS.md — guidelines for humans and CI bots of the `dok-ts2gd` repository
+# AGENTS.md — guidelines for humans and CI bots of the `godot-typed-api` repository
 
 This file is a concise operational guide for humans and CI agents. It documents package invariants, the generation pipeline, and PR/release checklists.
 
@@ -39,7 +39,7 @@ This file is a concise operational guide for humans and CI agents. It documents 
 - Consumer import:
 
   ```ts
-  import type { Node, Vector3, int, float, Signal } from "dok-ts2gd";
+  import type { Node, Vector3, int, float, Signal } from "godot-typed-api";
   ```
 - Additional artifact for tools (e.g., ts→gd compiler): `gen/current/api-map.json` (camel↔snake mapping). Path and shape are stable.
 
