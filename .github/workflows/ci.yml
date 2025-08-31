@@ -1,0 +1,60 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  pr-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build generator
+        run: npm run build
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Fetch Godot docs (shallow)
+        run: npm run fetch
+        env:
+          GODOT_TAG: 4.4.3-stable
+
+      - name: Quick subset generate (Node, Button)
+        run: node dist/scripts/generate.js --subset Node,Button
+        env:
+          GODOT_TAG: 4.4.3-stable
+
+      - name: Determinism check (generate twice, diff empty)
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="4.4.3-stable"
+          SNAP="gen/${TAG}-first"
+          rm -rf "$SNAP"
+          cp -r "gen/${TAG}" "$SNAP"
+          # Run again
+          node dist/scripts/generate.js --subset Node,Button
+          # No differences expected
+          git diff --no-index --exit-code "$SNAP" "gen/${TAG}"
+
+      - name: Current switch sanity check
+        run: |
+          npm run set-current
+          test -f gen/current/index.d.ts
+        env:
+          GODOT_TAG: 4.4.3-stable
+

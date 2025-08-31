@@ -1,0 +1,72 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      godot_tag:
+        description: Godot tag to generate from (e.g., 4.4.3-stable)
+        required: true
+        default: 4.4.3-stable
+      generator_n:
+        description: Optional generator delta N to append (-N)
+        required: false
+        default: ""
+  schedule:
+    - cron: "0 3 * * 1" # optional weekly check/build
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build generator
+        run: npm run build
+
+      - name: Fetch Godot docs
+        run: npm run fetch
+        env:
+          GODOT_TAG: ${{ inputs.godot_tag }}
+
+      - name: Generate types
+        run: npm run gen
+        env:
+          GODOT_TAG: ${{ inputs.godot_tag }}
+
+      - name: Set current and bump version
+        run: npm run set-current
+        env:
+          GODOT_TAG: ${{ inputs.godot_tag }}
+          UPDATE_VERSION: "1"
+          GENERATOR_N: ${{ inputs.generator_n }}
+
+      - name: Commit generated artifacts
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add gen/ package.json index.d.ts
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(gen): update from Godot ${{ inputs.godot_tag }}"
+            git push
+          else
+            echo "No changes to commit."
+          fi
+
+      - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public
+

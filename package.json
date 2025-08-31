@@ -1,0 +1,40 @@
+{
+  "name": "dok-ts2gd",
+  "version": "1.0.0",
+  "type": "module",
+  "exports": { ".": { "types": "./index.d.ts" } },
+  "types": "./index.d.ts",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "build": "rimraf dist && tsc -p tsconfig.json",
+    "test": "vitest --run",
+    "fetch": "node dist/scripts/fetch-godot.js",
+    "gen": "node dist/scripts/generate.js",
+    "set-current": "node dist/scripts/build.js",
+    "regen": "npm run gen && npm run set-current",
+    "pack:local": "npm pack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dok11/dok-ts2gd.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Dok11/dok-ts2gd/issues"
+  },
+  "homepage": "https://github.com/Dok11/dok-ts2gd#readme",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "rimraf": "^6.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4",
+    "zod": "^4.1.5"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^5.2.5",
+    "undici": "^7.15.0"
+  }
+}

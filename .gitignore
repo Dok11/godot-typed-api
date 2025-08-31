@@ -1,0 +1,40 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# TypeScript build output
+dist/
+build/
+
+# Tests / Coverage
+coverage/
+.vitest/
+
+# Env and local config
+.env
+.env.*
+
+# Editors / IDEs
+.idea/
+.vscode/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Archives / packages
+*.tgz
+*.zip
+
+# Temporary files
+tmp/
+.tmp/
+*.tmp
+
+# Godot/Generator specifics
+# Keep generated types committed; do NOT ignore gen/
+# gen/
+
