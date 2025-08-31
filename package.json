@@ -1,12 +1,27 @@
 {
   "name": "godot-typed-api",
-  "version": "1.0.1",
+  "version": "4.4.3-stable",
   "type": "module",
   "exports": { ".": { "types": "./index.d.ts" } },
   "types": "./index.d.ts",
-  "keywords": [],
+  "description": "Strictly modular TypeScript types for the Godot API.",
+  "keywords": [
+    "godot",
+    "typescript",
+    "types",
+    "dts",
+    "typings",
+    "gamedev"
+  ],
   "author": "",
   "license": "ISC",
+  "files": [
+    "index.d.ts",
+    "src-template",
+    "gen/current"
+  ],
+  "sideEffects": false,
+  "publishConfig": { "access": "public" },
   "scripts": {
     "build": "rimraf dist && tsc -p tsconfig.json",
     "test": "vitest --run",
@@ -14,7 +29,8 @@
     "gen": "node dist/scripts/generate.js",
     "set-current": "node dist/scripts/build.js",
     "regen": "npm run gen && npm run set-current",
-    "pack:local": "npm pack"
+    "pack:local": "npm pack",
+    "prepublishOnly": "npm run build && npm test"
   },
   "repository": {
     "type": "git",
@@ -24,17 +40,14 @@
     "url": "https://github.com/Dok11/godot-typed-api/issues"
   },
   "homepage": "https://github.com/Dok11/godot-typed-api#readme",
-  "description": "",
   "devDependencies": {
     "@types/node": "^24.3.0",
+    "fast-xml-parser": "^5.2.5",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2",
+    "undici": "^7.15.0",
     "vitest": "^3.2.4",
     "zod": "^4.1.5"
-  },
-  "dependencies": {
-    "fast-xml-parser": "^5.2.5",
-    "undici": "^7.15.0"
   }
 }
