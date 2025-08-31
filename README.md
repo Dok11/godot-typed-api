@@ -36,32 +36,37 @@ const f: float = 3.14 as unknown as float;
 - Package entry point: `index.d.ts` → `./gen/current/index.d.ts`.
 - API map for tools: `gen/current/api-map.json` (stable path and shape).
 
-## Generation Invariants
+## Public Package Contract
 
-- Names
-  - Default: `snake_case → camelCase` for methods/properties/signals.
-  - Exceptions (names and public visibility preserved):
-    `_ready`, `_process`, `_physics_process`, `_input`, `_init`, `_enter_tree`, `_exit_tree`, `_get_configuration_warnings`, `_shortcut_input`, `_unhandled_input`, `_unhandled_key_input`.
-- Numbers
-  - `int` and `float` are branded types; never replaced with `number`.
-- Collections
-  - Godot `Array<T>` → `GodotArray<T>`, Godot `Dictionary` → `GodotDictionary<V>`.
-- Privacy
-  - Truly private members from docs: leading `_` is stripped and marked `private`.
-  - Public items with leading `_`: allowed only via explicit whitelist.
-- JSDoc
-  - Copy descriptions/params/returns/deprecations; convert BBCode/links to Markdown.
-- Determinism
-  - Stable sorting, 2‑space indent, LF newlines, no timestamps.
+- Exports/types:
+
+  ```json
+  { "exports": { ".": { "types": "./index.d.ts" } }, "types": "./index.d.ts" }
+  ```
+
+- Consumer import:
+
+  ```ts
+  import type { Node, Vector3, int, float, Signal } from "godot-typed-api";
+  ```
+
+## Generation Invariants (summary)
+
+- Names: `snake_case → camelCase` by default; keep engine callbacks verbatim: `_ready`, `_process`, `_physics_process`, `_input`, `_init`, `_enter_tree`, `_exit_tree`, `_get_configuration_warnings`, `_shortcut_input`, `_unhandled_input`, `_unhandled_key_input`.
+- Numbers: `int`/`float` are brands; never degrade to `number`.
+- Collections: Godot `Array<T>` → `GodotArray<T>`, `Dictionary` → `GodotDictionary<V>`.
+- Privacy: truly private doc members lose leading `_` and become `private`.
+- JSDoc: descriptions/params/returns/deprecations carried over; BBCode/links → Markdown.
+- Determinism: stable sorting, 2-space indent, LF, no timestamps.
 
 ## Repository Layout
 
 ```
 /scripts/           # generator and utilities (ESM, TS)
 /src-template/      # base types: int/float, Signal, collections
-/gen/<tag>/         # auto‑generated for a specific Godot tag
+/gen/<tag>/         # auto-generated for a specific Godot tag
 /gen/current/       # active version (copy of one gen/<tag>/)
-/index.d.ts         # single types entry point (points to gen/current/index.d.ts)
+/index.d.ts         # single entry point (re-exports gen/current/index.d.ts)
 /tests/             # unit tests for the generator/utils
 ```
 
@@ -95,58 +100,18 @@ node dist/scripts/build.js
 npm test
 ```
 
-Pipeline overview:
-1) fetch: shallow clone/download `godotengine/godot` at the tag (no submodules)
-2) parse → normalize → emit: read `doc/classes/*.xml`, apply naming/type/privacy/JSDoc rules, emit per‑class `d.ts` + `index.d.ts` and `api-map.json`
-3) current switch: update `gen/current/` to a copy of the chosen version
-
 ## CI and Releases
 
 - PR CI:
   - `npm ci`
   - `npm run build`
   - `npm test`
-  - determinism check: run generation twice → diff must be empty
-- Release CI (input `GODOT_TAG`):
-  1. fetch: Godot tag
-  2. generate: fill `gen/<tag>/...`
-  3. set current: replace `gen/current/`
-  4. validate: build/tests/optional `tsc --noEmit`
-  5. publish: commit `gen/<tag>` and `gen/current`; package version = `<GODOT_TAG>` (or `<GODOT_TAG>-N` if generator changed); `npm publish --access public`
-
-## Public Package Contract
-
-- Modular export only (no globals):
-
-  ```json
-  { "exports": { ".": { "types": "./index.d.ts" } }, "types": "./index.d.ts" }
-  ```
-
-- Consumer import:
-
-  ```ts
-  import type { Node, Vector3, int, float, Signal } from "godot-typed-api";
-  ```
-
-## Contributing
-
-- Use Conventional Commits.
-- Accompany generator changes with tests in `tests/**`.
-- Upstream types update in a separate commit: `chore(gen): update from Godot X.Y`.
-- Ensure stable sorting and no output drift.
-- No raw BBCode/HTML left in JSDoc (converted during emit).
-
-## Don’t Forget
-
-- Package is strictly modular: no `declare global`.
-- Single entry point: `index.d.ts` → `gen/current/index.d.ts`.
-- `api-map.json` is a stable interface for tools.
-- `int`/`float` brands are mandatory — do not degrade to `number`.
-- Engine magic callbacks are not modified in name/public visibility.
+  - Determinism check: run generation twice → diff must be empty
+- Release CI (input `GODOT_TAG`): fetch → generate → set current → validate → publish.
 
 ## Attribution
 
-- Godot documentation is owned by the Godot Docs authors and licensed under CC‑BY 3.0. Generated files include attribution and a source link in the version header.
+- Godot documentation is owned by the Godot Docs authors and licensed under CC-BY 3.0. Generated files include attribution and a source link in the version header.
 
 ## Security and Configuration
 
